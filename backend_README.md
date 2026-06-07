@@ -149,7 +149,7 @@ Trust Project
 
 ### 3. 确认需要的插件
 
-刚下载 IDEA 的同学，需要确认已安装以下插件：
+如果刚下载 IDEA，需要确认已安装以下插件：
 
 ```text
 File → Settings → Plugins
