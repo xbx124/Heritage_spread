@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.example.heritage.mapper.HeritageInheritorMapper">
+
+    <select id="selectInheritorList" resultType="org.example.heritage.pojo.vo.InheritorVO">
+        SELECT
+        i.inheritor_id AS inheritorId,
+        i.name,
+        i.project_id AS projectId,
+        p.project_name AS projectName,
+        i.years,
+        i.intro,
+        i.avatar
+        FROM heritage_inheritor i
+        INNER JOIN heritage_project p ON i.project_id = p.project_id
+        <where>
+            AND i.status = 1
+            AND p.status = 1
+            <if test="query.projectId != null">
+                AND i.project_id = #{query.projectId}
+            </if>
+            <if test="query.keyword != null and query.keyword != ''">
+                AND i.name LIKE CONCAT('%', #{query.keyword}, '%')
+            </if>
+        </where>
+        ORDER BY i.inheritor_id DESC
+        LIMIT #{query.size} OFFSET #{query.offset}
+    </select>
+
+    <select id="countInheritorList" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM heritage_inheritor i
+        INNER JOIN heritage_project p ON i.project_id = p.project_id
+        <where>
+            AND i.status = 1
+            AND p.status = 1
+            <if test="query.projectId != null">
+                AND i.project_id = #{query.projectId}
+            </if>
+            <if test="query.keyword != null and query.keyword != ''">
+                AND i.name LIKE CONCAT('%', #{query.keyword}, '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectInheritorDetail" resultType="org.example.heritage.pojo.vo.InheritorVO">
+        SELECT
+        i.inheritor_id AS inheritorId,
+        i.name,
+        i.project_id AS projectId,
+        p.project_name AS projectName,
+        i.years,
+        i.intro,
+        i.avatar
+        FROM heritage_inheritor i
+        INNER JOIN heritage_project p ON i.project_id = p.project_id
+        WHERE i.inheritor_id = #{inheritorId}
+          AND i.status = 1
+          AND p.status = 1
+    </select>
+
+    <select id="searchInheritors" resultType="org.example.heritage.pojo.vo.SearchVO">
+        SELECT
+        'inheritor' AS type,
+        i.inheritor_id AS id,
+        i.name AS name,
+        NULL AS area,
+        p.project_name AS projectName,
+        LEFT(i.intro, 80) AS description
+        FROM heritage_inheritor i
+        INNER JOIN heritage_project p ON i.project_id = p.project_id
+        WHERE i.status = 1
+          AND p.status = 1
+          AND i.name LIKE CONCAT('%', #{keyword}, '%')
+        ORDER BY i.inheritor_id DESC
+    </select>
+
+</mapper>

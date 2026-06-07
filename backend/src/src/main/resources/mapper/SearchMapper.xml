@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.example.heritage.mapper.SearchMapper">
+
+    <select id="searchAll" resultType="org.example.heritage.pojo.vo.SearchVO">
+        SELECT
+        type,
+        id,
+        name,
+        area,
+        projectName,
+        description
+        FROM (
+            SELECT
+            'project' AS type,
+            p.project_id AS id,
+            p.project_name AS name,
+            p.area AS area,
+            NULL AS projectName,
+            LEFT(p.project_intro, 80) AS description,
+            COALESCE(p.update_time, p.create_time) AS sortTime
+            FROM heritage_project p
+            WHERE p.status = 1
+              AND (
+                  p.project_name LIKE CONCAT('%', #{keyword}, '%')
+                  OR p.area LIKE CONCAT('%', #{keyword}, '%')
+                  OR p.project_intro LIKE CONCAT('%', #{keyword}, '%')
+              )
+
+            UNION ALL
+
+            SELECT
+            'inheritor' AS type,
+            i.inheritor_id AS id,
+            i.name AS name,
+            NULL AS area,
+            p.project_name AS projectName,
+            LEFT(i.intro, 80) AS description,
+            COALESCE(i.update_time, i.create_time) AS sortTime
+            FROM heritage_inheritor i
+            INNER JOIN heritage_project p ON i.project_id = p.project_id
+            WHERE i.status = 1
+              AND p.status = 1
+              AND i.name LIKE CONCAT('%', #{keyword}, '%')
+
+            UNION ALL
+
+            SELECT
+            'news' AS type,
+            n.news_id AS id,
+            n.title AS name,
+            NULL AS area,
+            NULL AS projectName,
+            LEFT(n.summary, 80) AS description,
+            COALESCE(n.update_time, n.publish_time, n.create_time) AS sortTime
+            FROM heritage_news n
+            WHERE n.status = 'published'
+              AND n.title LIKE CONCAT('%', #{keyword}, '%')
+        ) t
+        ORDER BY t.sortTime DESC, t.id DESC
+    </select>
+
+</mapper>

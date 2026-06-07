@@ -1,0 +1,80 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: Heritage
+
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/heritage_spread_db?serverTimezone=Asia/Shanghai&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: bingo...333
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  sql:
+    init:
+      mode: never
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: ""
+      database: 0
+      timeout: 5s
+
+  servlet:
+    multipart:
+      max-file-size: 200MB
+      max-request-size: 200MB
+
+  cache:
+    type: none
+
+# JWT
+jwt:
+  secret-key: heritage-spread-system-jwt-secret-key-please-change-it-to-longer-than-32-bytes
+  ttl: 604800000
+
+# MyBatis-Plus ??
+mybatis-plus:
+  mapper-locations: classpath*:mapper/**/*.xml
+  type-aliases-package: org.example.heritage.pojo.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: auto
+
+# SpringDoc OpenAPI ??
+springdoc:
+  cache:
+    disabled: true
+  show-actuator: false
+  model-and-view-allowed: false
+  writer-with-default-pretty-printer: false
+  swagger-ui:
+    try-it-out-enabled: true
+
+# Knife4j ??
+knife4j:
+  enable: true
+  production: false
+
+logging:
+  level:
+    root: INFO
+    org.springframework: WARN
+    org.springdoc: WARN
+    com.github.xiaoymin.knife4j: WARN
+    org.apache.catalina: WARN
+    org.apache.tomcat: WARN
+    sun.rmi: ERROR
+    javax.management: ERROR
