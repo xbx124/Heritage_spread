@@ -58,7 +58,7 @@ Maven: 3.8+
 默认配置文件位置：
 
 ```text
-src/main/resources/application.yml
+backend/src/main/resources/application.yml
 ```
 
 当前数据库连接配置示例：
@@ -80,11 +80,21 @@ DEFAULT CHARACTER SET utf8mb4
 COLLATE utf8mb4_general_ci;
 ```
 
+Maven依赖请见
+```text
+backend/pom.xml
+```
+
 如团队仓库中存在数据库脚本，请优先执行：
 
 ```text
 database/create.sql
 database/sample.sql
+```
+
+如团队仓库数据库脚本还不存在/未完善，可先运行：
+```text
+backend\src\main\resources\heritage_spread_db
 ```
 
 ## 五、启动项目
@@ -114,20 +124,7 @@ OpenAPI JSON 地址通常为：
 http://localhost:8080/v3/api-docs
 ```
 
-## 六、主要接口模块
-
-| 模块 | 路径前缀 | 说明 |
-|---|---|---|
-| 用户认证 | `/api/auth` | 注册、登录、获取当前登录用户 |
-| 非遗分类 | `/api/categories` | 分类新增、修改、删除、查询 |
-| 非遗项目 | `/api/projects` | 项目新增、修改、删除、分页查询、详情查询 |
-| 传承人 | `/api/inheritors` | 传承人新增、修改、删除、查询 |
-| 文化资讯 | `/api/news` | 资讯发布、修改、删除、审核、评论 |
-| 传播渠道 | `/api/channels` | 渠道新增、修改、删除、查询 |
-| 传播统计 | `/api/stats` | 渠道统计、项目统计、趋势数据、记录传播数据 |
-| 全局搜索 | `/api/search` | 项目、资讯、传承人等内容搜索 |
-
-## 七、JWT 使用说明
+## 六、JWT 使用说明
 
 登录接口成功后会返回 Token。
 
@@ -143,34 +140,7 @@ Authorization: Bearer your_token
 Bearer your_token
 ```
 
-## 八、开发协作规范
-
-建议后端开发统一在 `backend` 分支上进行：
-
-```bash
-git checkout backend
-git pull origin backend
-```
-
-每次开发前先拉取最新代码，开发完成后提交：
-
-```bash
-git add backend
-git commit -m "feat: 完善后端接口逻辑"
-git push origin backend
-```
-
-提交信息建议格式：
-
-```text
-feat: 新增功能
-fix: 修复问题
-refactor: 重构代码
-docs: 修改文档
-chore: 配置或依赖调整
-```
-
-## 九、注意事项
+## 七、注意事项
 
 1. 不要把本地数据库密码、密钥、临时文件提交到仓库。
 2. `application.yml` 中的数据库密码建议改成个人本地配置，或使用 `application-dev.yml` 单独维护。
