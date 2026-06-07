@@ -106,7 +106,7 @@ mvn clean install
 mvn spring-boot:run
 ```
 
-启动成功后，默认访问地址：
+启动成功后，默认访问地址【前端请求后端地址】：
 
 ```text
 http://localhost:8080
