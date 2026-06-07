@@ -99,12 +99,136 @@ backend\src\main\resources\heritage_spread_db
 
 ## 五、启动项目
 
-在 `backend` 目录下执行：
+### 1. 克隆项目
+
+先安装 Git，然后在本地选择一个目录，右键打开终端，执行：
 
 ```bash
-mvn clean install
-mvn spring-boot:run
+git clone https://github.com/xbx124/Heritage_spread.git
 ```
+
+进入项目目录：
+
+```bash
+cd Heritage_spread
+```
+
+切换到后端分支：
+
+```bash
+git checkout backend
+```
+
+### 2. 用 IDEA 打开后端项目
+
+打开 IntelliJ IDEA，选择：
+
+```text
+File → Open
+```
+
+然后选择：
+
+```text
+Heritage_spread/backend
+```
+
+注意：不要打开整个 `Heritage_spread` 根目录，后端 Spring Boot 项目在 `backend` 文件夹中。
+
+如果 IDEA 提示：
+
+```text
+Trust Project?
+```
+
+点击：
+
+```text
+Trust Project
+```
+
+### 3. 确认需要的插件
+
+刚下载 IDEA 的同学，需要确认已安装以下插件：
+
+```text
+File → Settings → Plugins
+```
+
+建议检查：
+
+* Maven
+* Spring Boot
+* Lombok
+
+其中：
+
+* Maven：用于加载项目依赖
+* Spring Boot：用于识别和运行 Spring Boot 项目
+* Lombok：用于识别 `@Data`、`@Builder` 等注解
+
+如果插件未安装，搜索插件名称并安装，安装后重启 IDEA。
+
+### 4. 加载 Maven 依赖
+
+打开项目后，IDEA 会自动识别 `pom.xml` 并加载依赖。
+
+如果没有自动加载，可以：
+
+```text
+右键 backend/pom.xml
+→ Add as Maven Project
+```
+
+或者打开右侧 Maven 面板，点击：
+
+```text
+Reload All Maven Projects
+```
+
+等待依赖下载完成。
+
+### 5. 常见启动问题
+
+#### ① 端口被占用
+
+如果提示：
+
+```text
+Port 8080 was already in use
+```
+
+可以关闭占用 8080 的程序，或者在 `application.yml` 中修改端口：
+
+```yaml
+server:
+  port: 8081
+```
+
+#### ② 数据库连接失败
+
+如果提示数据库连接失败，请检查：
+
+* MySQL 是否已启动
+* 数据库名是否为 `heritage_spread_db`
+* 用户名和密码是否正确
+* 是否已导入数据库 SQL 脚本
+
+#### ③ Maven 依赖无法下载
+
+如果依赖一直下载失败，请检查：
+
+* 网络是否正常
+* IDEA 是否正确识别 `backend/pom.xml`
+* Maven 配置是否正确
+
+重新加载 Maven：
+
+```text
+右侧 Maven 面板 → Reload All Maven Projects
+```
+
+### 六、访问地址
 
 启动成功后，默认访问地址【前端请求后端地址】：
 
@@ -124,7 +248,7 @@ OpenAPI JSON 地址通常为：
 http://localhost:8080/v3/api-docs
 ```
 
-## 六、JWT 使用说明
+## 七、JWT 使用说明
 
 登录接口成功后会返回 Token。
 
@@ -140,7 +264,7 @@ Authorization: Bearer your_token
 Bearer your_token
 ```
 
-## 七、注意事项
+## 八、注意事项
 
 1. 不要把本地数据库密码、密钥、临时文件提交到仓库。
 2. `application.yml` 中的数据库密码建议改成个人本地配置，或使用 `application-dev.yml` 单独维护。
