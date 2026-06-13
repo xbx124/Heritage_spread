@@ -23,8 +23,6 @@ public class HeritageInheritor {
 
     private String intro;
 
-    /** 头像地址 */
-    private String avatar;
 
     /** 1正常，0删除 */
     private Integer status;

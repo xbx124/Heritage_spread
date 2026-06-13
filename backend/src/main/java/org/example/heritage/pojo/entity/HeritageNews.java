@@ -28,7 +28,6 @@ public class HeritageNews {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime publishTime;
 
-    /** published / draft / pending 等，由业务层限定 */
     private String status;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")

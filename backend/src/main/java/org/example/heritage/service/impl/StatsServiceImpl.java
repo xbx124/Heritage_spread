@@ -1,6 +1,5 @@
 package org.example.heritage.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.example.heritage.common.constants.RoleConstants;
 import org.example.heritage.common.constants.UserContext;
 import org.example.heritage.common.exception.BusinessException;
@@ -41,8 +40,16 @@ public class StatsServiceImpl implements StatsService {
     }
 
     @Override
-    public List<SpreadDataVO> projectStatsList() {
-        return spreadDataMapper.selectSpreadDataList();
+    public List<SpreadDataVO> projectStatsList(Integer page, Integer size) {
+        page = normalizePage(page);
+        size = normalizeSize(size);
+        Integer offset = (page - 1) * size;
+        return spreadDataMapper.selectSpreadDataList(offset, size);
+    }
+
+    @Override
+    public Long countProjectStatsList() {
+        return spreadDataMapper.countSpreadDataList();
     }
 
     @Override
@@ -81,52 +88,46 @@ public class StatsServiceImpl implements StatsService {
         if (channel == null) {
             throw new BusinessException(404, "渠道不存在");
         }
-        if (channel.getStatus() != null && channel.getStatus() == 0) {
-            throw new BusinessException(400, "渠道已禁用，无法更新传播数据");
+        if (channel.getStatus() == null || channel.getStatus() != 1) {
+            throw new BusinessException(400, "渠道已禁用，无法录入传播数据");
         }
-
-        LocalDateTime startTime = dto.getDate().atStartOfDay();
-        LocalDateTime endTime = dto.getDate().plusDays(1).atStartOfDay();
-
-        SpreadData old = spreadDataMapper.selectOne(
-                new LambdaQueryWrapper<SpreadData>()
-                        .eq(SpreadData::getProjectId, dto.getProjectId())
-                        .eq(SpreadData::getChannelId, dto.getChannelId())
-                        .ge(SpreadData::getStatTime, startTime)
-                        .lt(SpreadData::getStatTime, endTime)
-                        .orderByDesc(SpreadData::getUpdateTime)
-                        .orderByDesc(SpreadData::getCreateTime)
-                        .orderByDesc(SpreadData::getDataId)
-                        .last("LIMIT 1")
-        );
 
         LocalDateTime now = LocalDateTime.now();
         Integer currentUserId = getCurrentUserId();
 
-        if (old == null) {
-            SpreadData spreadData = new SpreadData();
-            spreadData.setProjectId(dto.getProjectId());
-            spreadData.setChannelId(dto.getChannelId());
-            spreadData.setViewNum(dto.getViewNum());
-            spreadData.setExposureNum(dto.getExposureNum());
+        SpreadData spreadData = new SpreadData();
+        spreadData.setProjectId(dto.getProjectId());
+        spreadData.setChannelId(dto.getChannelId());
+        spreadData.setViewNum(dto.getViewNum());
+        spreadData.setExposureNum(dto.getExposureNum());
+        spreadData.setStatTime(resolveStatTime(dto, now));
+        spreadData.setCreateTime(now);
+        spreadData.setUpdateTime(now);
+        spreadData.setCreateId(currentUserId);
+        spreadData.setUpdateId(currentUserId);
 
-            spreadData.setStatTime(startTime);
-            spreadData.setCreateTime(now);
-            spreadData.setUpdateTime(now);
-            spreadData.setCreateId(currentUserId);
-            spreadData.setUpdateId(currentUserId);
+        spreadDataMapper.insert(spreadData);
+    }
 
-            spreadDataMapper.insert(spreadData);
-        } else {
-            old.setViewNum(dto.getViewNum());
-            old.setExposureNum(dto.getExposureNum());
-
-            old.setStatTime(startTime);
-            old.setUpdateTime(now);
-            old.setUpdateId(currentUserId);
-
-            spreadDataMapper.updateById(old);
+    private LocalDateTime resolveStatTime(SpreadDataUpdateDTO dto, LocalDateTime now) {
+        if (dto.getStatTime() != null) {
+            return dto.getStatTime();
         }
+        if (dto.getDate() != null) {
+            return dto.getDate().atStartOfDay();
+        }
+        return now;
+    }
+
+    private Integer normalizePage(Integer page) {
+        return page == null || page < 1 ? 1 : page;
+    }
+
+    private Integer normalizeSize(Integer size) {
+        if (size == null || size < 1) {
+            return 10;
+        }
+        return Math.min(size, 100);
     }
 
     private Integer getCurrentUserId() {

@@ -12,7 +12,9 @@ public interface StatsService {
 
     List<ChannelStatsVO> channelStats();
 
-    List<SpreadDataVO> projectStatsList();
+    List<SpreadDataVO> projectStatsList(Integer page, Integer size);
+
+    Long countProjectStatsList();
 
     ProjectStatsVO projectStats(Integer projectId);
 

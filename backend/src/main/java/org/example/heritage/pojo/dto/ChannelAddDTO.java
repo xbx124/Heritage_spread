@@ -12,6 +12,6 @@ public class ChannelAddDTO {
     private String channelName;
 
     @NotBlank(message = "渠道类型不能为空")
-    @Size(max = 50, message = "渠道类型不能超过50个字符")
+    @Size(max = 30, message = "渠道类型不能超过30个字符")
     private String channelType;
 }

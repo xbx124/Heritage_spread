@@ -138,10 +138,7 @@ public class NewsServiceImpl implements NewsService {
             throw new BusinessException(404, "资讯不存在或已删除");
         }
 
-        String status = dto.getStatus();
-        if (!STATUS_PUBLISHED.equals(status) && !STATUS_REJECTED.equals(status) && !STATUS_PENDING.equals(status)) {
-            throw new BusinessException(400, "审核状态只能是 published、rejected、pending");
-        }
+        String status = normalizeAuditStatus(dto.getStatus());
         news.setStatus(status);
         syncPublishTime(news, status, LocalDateTime.now());
         news.setUpdateTime(LocalDateTime.now());
@@ -212,6 +209,23 @@ public class NewsServiceImpl implements NewsService {
         }
         if (!STATUS_PUBLISHED.equals(status) && !STATUS_DRAFT.equals(status) && !STATUS_PENDING.equals(status)) {
             throw new BusinessException(400, "资讯状态只能是 published、draft、pending");
+        }
+        return status;
+    }
+
+    /**
+     * 审核状态规范化方法
+     * 用于审核操作，只允许 published、rejected、pending 三种状态
+     * @param status 待校验的状态值
+     * @return 校验后的状态值
+     * @throws BusinessException 状态不合法时抛出异常
+     */
+    private String normalizeAuditStatus(String status) {
+        if (status == null || status.isBlank()) {
+            throw new BusinessException(400, "审核状态不能为空");
+        }
+        if (!STATUS_PUBLISHED.equals(status) && !STATUS_REJECTED.equals(status) && !STATUS_PENDING.equals(status)) {
+            throw new BusinessException(400, "审核状态只能是 published、rejected、pending");
         }
         return status;
     }

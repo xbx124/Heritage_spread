@@ -93,7 +93,6 @@ public class ProjectServiceImpl implements ProjectService {
                 inheritor.setProjectId(project.getProjectId());
                 inheritor.setYears(item.getYears());
                 inheritor.setIntro(item.getIntro());
-                inheritor.setAvatar(item.getAvatar());
                 inheritor.setStatus(1);
                 inheritor.setCreateTime(now);
                 inheritor.setUpdateTime(now);
@@ -145,17 +144,6 @@ public class ProjectServiceImpl implements ProjectService {
         project.setUpdateId(currentUserId);
         projectMapper.updateById(project);
 
-        List<HeritageInheritor> inheritors = inheritorMapper.selectList(
-                new com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper<HeritageInheritor>()
-                        .eq(HeritageInheritor::getProjectId, projectId)
-                        .eq(HeritageInheritor::getStatus, 1)
-        );
-        for (HeritageInheritor inheritor : inheritors) {
-            inheritor.setStatus(0);
-            inheritor.setUpdateTime(now);
-            inheritor.setUpdateId(currentUserId);
-            inheritorMapper.updateById(inheritor);
-        }
     }
 
     private Integer getCurrentUserId() {

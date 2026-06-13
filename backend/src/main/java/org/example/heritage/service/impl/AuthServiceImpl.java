@@ -58,7 +58,7 @@ public class AuthServiceImpl implements AuthService {
             throw new BusinessException(401, "用户名或密码错误");
         }
         if (user.getStatus() != null && user.getStatus() == 0) {
-            throw new BusinessException(403, "账号已被禁用");
+            throw new BusinessException(403, "账号已禁用");
         }
 
         String token = JwtUtil.createToken(
@@ -84,7 +84,7 @@ public class AuthServiceImpl implements AuthService {
             throw new BusinessException(404, "用户不存在");
         }
         if (user.getStatus() != null && user.getStatus() == 0) {
-            throw new BusinessException(403, "账号已被禁用");
+            throw new BusinessException(403, "账号已禁用");
         }
 
         return buildUserVO(user);

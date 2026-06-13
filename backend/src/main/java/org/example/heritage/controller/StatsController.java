@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.heritage.common.result.PageResult;
 import org.example.heritage.common.result.Result;
 import org.example.heritage.pojo.dto.SpreadDataUpdateDTO;
 import org.example.heritage.pojo.vo.ChannelStatsVO;
@@ -34,13 +35,17 @@ public class StatsController {
         return Result.success(list);
     }
 
-    @Operation(summary = "项目传播数据统计")
+    @Operation(summary = "分页查询原始传播数据记录")
     @GetMapping("/project")
-    public Result<List<SpreadDataVO>> projectStatsList() {
-        log.info("项目传播数据统计列表开始");
-        List<SpreadDataVO> list = statsService.projectStatsList();
-        log.info("项目传播数据统计列表成功，size={}", list == null ? 0 : list.size());
-        return Result.success(list);
+    public Result<PageResult<SpreadDataVO>> projectStatsList(@RequestParam(required = false) Integer page,
+                                                             @RequestParam(required = false) Integer size) {
+        page = normalizePage(page);
+        size = normalizeSize(size);
+        log.info("分页查询原始传播数据记录开始，page={}, size={}", page, size);
+        List<SpreadDataVO> list = statsService.projectStatsList(page, size);
+        Long total = statsService.countProjectStatsList();
+        log.info("分页查询原始传播数据记录成功，total={}, currentSize={}", total, list == null ? 0 : list.size());
+        return Result.success(new PageResult<>(list, total, page, size));
     }
 
     @Operation(summary = "单个项目传播热度统计")
@@ -61,14 +66,25 @@ public class StatsController {
         return Result.success(list);
     }
 
-    @Operation(summary = "录入或更新传播数据")
+    @Operation(summary = "手动录入传播数据")
     @PostMapping("/record")
     public Result<Void> record(@Valid @RequestBody SpreadDataUpdateDTO dto) {
-        log.info("录入或更新传播数据开始，projectId={}, channelId={}, date={}",
-                dto.getProjectId(), dto.getChannelId(), dto.getDate());
+        log.info("手动录入传播数据开始，projectId={}, channelId={}, statTime={}",
+                dto.getProjectId(), dto.getChannelId(), dto.getStatTime());
         statsService.record(dto);
-        log.info("录入或更新传播数据成功，projectId={}, channelId={}, date={}",
-                dto.getProjectId(), dto.getChannelId(), dto.getDate());
+        log.info("手动录入传播数据成功，projectId={}, channelId={}, statTime={}",
+                dto.getProjectId(), dto.getChannelId(), dto.getStatTime());
         return Result.success();
+    }
+
+    private Integer normalizePage(Integer page) {
+        return page == null || page < 1 ? 1 : page;
+    }
+
+    private Integer normalizeSize(Integer size) {
+        if (size == null || size < 1) {
+            return 10;
+        }
+        return Math.min(size, 100);
     }
 }

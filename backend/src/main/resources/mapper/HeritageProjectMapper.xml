@@ -79,7 +79,12 @@
         IFNULL(SUM(d.exposure_num), 0) AS totalExposure,
         COUNT(DISTINCT d.channel_id) AS channelCount
         FROM heritage_project p
-        LEFT JOIN spread_data d ON p.project_id = d.project_id
+        LEFT JOIN (
+            SELECT d.*
+            FROM spread_data d
+            INNER JOIN spread_channel c ON d.channel_id = c.channel_id
+            WHERE c.status = 1
+        ) d ON p.project_id = d.project_id
         WHERE p.project_id = #{projectId}
           AND p.status = 1
         GROUP BY p.project_id, p.project_name

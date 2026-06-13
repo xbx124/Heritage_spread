@@ -11,6 +11,6 @@ public class CategoryAddDTO {
     @Size(max = 50, message = "分类名称不能超过50个字符")
     private String categoryName;
 
-    @Size(max = 500, message = "分类描述不能超过500个字符")
+    @Size(max = 255, message = "分类描述不能超过255个字符")
     private String categoryDesc;
 }

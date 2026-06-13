@@ -18,7 +18,7 @@ public class ProjectAddDTO {
     @NotNull(message = "分类ID不能为空")
     private Integer categoryId;
 
-    @Size(max = 100, message = "地区不能超过100个字符")
+    @Size(max = 50, message = "地区不能超过50个字符")
     private String area;
 
     @Size(max = 2000, message = "项目介绍不能超过2000个字符")

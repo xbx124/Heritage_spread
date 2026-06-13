@@ -57,7 +57,6 @@ public class InheritorServiceImpl implements InheritorService {
         inheritor.setProjectId(dto.getProjectId());
         inheritor.setYears(dto.getYears());
         inheritor.setIntro(dto.getIntro());
-        inheritor.setAvatar(dto.getAvatar());
         inheritor.setStatus(1);
         LocalDateTime now = LocalDateTime.now();
         Integer currentUserId = getCurrentUserId();
@@ -85,7 +84,6 @@ public class InheritorServiceImpl implements InheritorService {
         inheritor.setProjectId(dto.getProjectId());
         inheritor.setYears(dto.getYears());
         inheritor.setIntro(dto.getIntro());
-        inheritor.setAvatar(dto.getAvatar());
         inheritor.setUpdateTime(LocalDateTime.now());
         inheritor.setUpdateId(getCurrentUserId());
 

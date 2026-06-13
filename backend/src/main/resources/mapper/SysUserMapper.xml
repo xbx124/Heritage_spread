@@ -16,7 +16,6 @@
         update_time AS updateTime
         FROM sys_user
         WHERE username = #{username}
-            AND status = 1
         LIMIT 1
     </select>
 

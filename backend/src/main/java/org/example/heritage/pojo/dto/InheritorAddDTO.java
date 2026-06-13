@@ -10,7 +10,7 @@ import lombok.Data;
 public class InheritorAddDTO {
 
     @NotBlank(message = "传承人姓名不能为空")
-    @Size(max = 50, message = "传承人姓名不能超过50个字符")
+    @Size(max = 30, message = "传承人姓名不能超过30个字符")
     private String name;
 
     @NotNull(message = "项目ID不能为空")
@@ -22,6 +22,4 @@ public class InheritorAddDTO {
     @Size(max = 2000, message = "传承人介绍不能超过2000个字符")
     private String intro;
 
-    @Size(max = 255, message = "头像地址不能超过255个字符")
-    private String avatar;
 }

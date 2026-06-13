@@ -17,5 +17,4 @@ public class InheritorVO {
 
     private String intro;
 
-    private String avatar;
 }

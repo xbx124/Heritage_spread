@@ -12,8 +12,7 @@
         i.project_id AS projectId,
         p.project_name AS projectName,
         i.years,
-        i.intro,
-        i.avatar
+        i.intro
         FROM heritage_inheritor i
         INNER JOIN heritage_project p ON i.project_id = p.project_id
         <where>
@@ -53,8 +52,7 @@
         i.project_id AS projectId,
         p.project_name AS projectName,
         i.years,
-        i.intro,
-        i.avatar
+        i.intro
         FROM heritage_inheritor i
         INNER JOIN heritage_project p ON i.project_id = p.project_id
         WHERE i.inheritor_id = #{inheritorId}
