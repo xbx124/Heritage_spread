@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.example.heritage.mapper.HeritageCategoryMapper">
+
+    <select id="selectCategoryPage" resultType="org.example.heritage.pojo.entity.HeritageCategory">
+        SELECT
+        category_id AS categoryId,
+        category_name AS categoryName,
+        category_desc AS categoryDesc,
+        create_time AS createTime,
+        update_time AS updateTime,
+        create_id AS createId,
+        update_id AS updateId
+        FROM heritage_category
+        ORDER BY category_id ASC
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+
+    <select id="countCategoryPage" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM heritage_category
+    </select>
+
+</mapper>
