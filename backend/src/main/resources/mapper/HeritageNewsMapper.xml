@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.example.heritage.mapper.HeritageNewsMapper">
+
+    <select id="selectNewsPage" resultType="org.example.heritage.pojo.vo.NewsPageVO">
+        SELECT
+        n.news_id AS newsId,
+        n.title,
+        n.summary,
+        u.username AS author,
+        n.publish_time AS publishTime
+        FROM heritage_news n
+        LEFT JOIN sys_user u ON n.user_id = u.user_id
+        <where>
+            AND n.status = 'published'
+            <if test="query.keyword != null and query.keyword != ''">
+                AND n.title LIKE CONCAT('%', #{query.keyword}, '%')
+            </if>
+        </where>
+        ORDER BY n.publish_time DESC
+        LIMIT #{query.size} OFFSET #{query.offset}
+    </select>
+
+    <select id="countNewsPage" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM heritage_news n
+        <where>
+            AND n.status = 'published'
+            <if test="query.keyword != null and query.keyword != ''">
+                AND n.title LIKE CONCAT('%', #{query.keyword}, '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectNewsDetail" resultType="org.example.heritage.pojo.vo.NewsDetailVO">
+        SELECT
+        n.news_id AS newsId,
+        n.title,
+        n.content,
+        n.summary,
+        n.user_id AS userId,
+        u.username AS author,
+        n.publish_time AS publishTime,
+        n.status,
+        (
+            SELECT COUNT(*)
+            FROM news_comment nc
+            WHERE nc.news_id = n.news_id
+              AND nc.status = 1
+        ) AS commentsCount
+        FROM heritage_news n
+        LEFT JOIN sys_user u ON n.user_id = u.user_id
+        WHERE n.news_id = #{newsId}
+          AND n.status = 'published'
+    </select>
+
+    <select id="countComments" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM news_comment nc
+        WHERE nc.news_id = #{newsId}
+          AND nc.status = 1
+    </select>
+
+    <select id="selectComments" resultType="org.example.heritage.pojo.vo.CommentVO">
+        SELECT
+        nc.comment_id AS commentId,
+        nc.user_id AS userId,
+        u.username AS username,
+        nc.content,
+        nc.create_time AS createTime
+        FROM news_comment nc
+        LEFT JOIN sys_user u ON nc.user_id = u.user_id
+        WHERE nc.news_id = #{newsId}
+          AND nc.status = 1
+        ORDER BY nc.create_time DESC
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+
+    <insert id="insertComment">
+        INSERT INTO news_comment (
+        news_id,
+        user_id,
+        content,
+        status,
+        create_time,
+        update_time
+        ) VALUES (
+        #{newsId},
+        #{userId},
+        #{content},
+        1,
+        NOW(),
+        NOW()
+        )
+    </insert>
+
+    <select id="searchNews" resultType="org.example.heritage.pojo.vo.SearchVO">
+        SELECT
+        'news' AS type,
+        n.news_id AS id,
+        n.title AS name,
+        NULL AS area,
+        NULL AS projectName,
+        LEFT(n.summary, 80) AS description
+        FROM heritage_news n
+        WHERE n.status = 'published'
+          AND n.title LIKE CONCAT('%', #{keyword}, '%')
+        ORDER BY n.publish_time DESC
+    </select>
+
+</mapper>

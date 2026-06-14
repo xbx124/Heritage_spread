@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.example.heritage.mapper.SpreadChannelMapper">
+
+    <select id="selectChannelList" resultType="org.example.heritage.pojo.vo.ChannelVO">
+        SELECT
+        channel_id AS channelId,
+        channel_name AS channelName,
+        channel_type AS channelType,
+        status
+        FROM spread_channel
+        <where>
+            <if test="includeDisabled == false">
+                AND status = 1
+            </if>
+        </where>
+        ORDER BY status DESC, channel_id ASC
+    </select>
+
+    <select id="selectChannelStats" resultType="org.example.heritage.pojo.vo.ChannelStatsVO">
+        SELECT
+        c.channel_id AS channelId,
+        c.channel_name AS channelName,
+        c.channel_type AS channelType,
+        IFNULL(SUM(d.view_num), 0) AS totalView,
+        IFNULL(SUM(d.exposure_num), 0) AS totalExposure
+        FROM spread_channel c
+        LEFT JOIN spread_data d ON c.channel_id = d.channel_id
+        LEFT JOIN heritage_project p ON d.project_id = p.project_id
+        <where>
+            c.status = 1
+            AND (p.project_id IS NULL OR p.status = 1)
+        </where>
+        GROUP BY c.channel_id, c.channel_name, c.channel_type
+        ORDER BY c.channel_id ASC
+    </select>
+
+</mapper>

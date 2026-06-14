@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.example.heritage.mapper.SpreadDataMapper">
+
+    <select id="selectSpreadDataList" resultType="org.example.heritage.pojo.vo.SpreadDataVO">
+        SELECT
+        d.data_id AS dataId,
+        d.project_id AS projectId,
+        p.project_name AS projectName,
+        d.channel_id AS channelId,
+        c.channel_name AS channelName,
+        d.view_num AS viewNum,
+        d.exposure_num AS exposureNum,
+        d.stat_time AS statTime
+        FROM spread_data d
+        INNER JOIN heritage_project p ON d.project_id = p.project_id
+        INNER JOIN spread_channel c ON d.channel_id = c.channel_id
+        WHERE p.status = 1
+          AND c.status = 1
+        ORDER BY d.stat_time DESC, d.data_id DESC
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+
+    <select id="countSpreadDataList" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM spread_data d
+        INNER JOIN heritage_project p ON d.project_id = p.project_id
+        INNER JOIN spread_channel c ON d.channel_id = c.channel_id
+        WHERE p.status = 1
+          AND c.status = 1
+    </select>
+
+    <select id="selectProjectTrend" resultType="org.example.heritage.pojo.vo.TrendDataVO">
+        SELECT
+        DATE(d.stat_time) AS date,
+        SUM(d.view_num) AS viewNum,
+        SUM(d.exposure_num) AS exposureNum
+        FROM spread_data d
+        INNER JOIN heritage_project p ON d.project_id = p.project_id
+        INNER JOIN spread_channel c ON d.channel_id = c.channel_id
+        WHERE d.project_id = #{projectId}
+          AND p.status = 1
+          AND c.status = 1
+        GROUP BY DATE(d.stat_time)
+        ORDER BY DATE(d.stat_time) ASC
+    </select>
+
+</mapper>

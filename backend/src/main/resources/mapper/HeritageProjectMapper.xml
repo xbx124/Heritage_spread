@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.example.heritage.mapper.HeritageProjectMapper">
+
+    <select id="selectProjectList" resultType="org.example.heritage.pojo.vo.ProjectListVO">
+        SELECT
+        p.project_id AS projectId,
+        p.project_name AS projectName,
+        p.category_id AS categoryId,
+        c.category_name AS categoryName,
+        p.area,
+        p.project_intro AS projectIntro,
+        p.status,
+        p.create_time AS createTime,
+        COUNT(i.inheritor_id) AS inheritorCount
+        FROM heritage_project p
+        LEFT JOIN heritage_category c ON p.category_id = c.category_id
+        LEFT JOIN heritage_inheritor i ON p.project_id = i.project_id AND i.status = 1
+        <where>
+            AND p.status = 1
+            <if test="query.categoryId != null">
+                AND p.category_id = #{query.categoryId}
+            </if>
+            <if test="query.area != null and query.area != ''">
+                AND p.area LIKE CONCAT('%', #{query.area}, '%')
+            </if>
+            <if test="query.keyword != null and query.keyword != ''">
+                AND p.project_name LIKE CONCAT('%', #{query.keyword}, '%')
+            </if>
+        </where>
+        GROUP BY
+        p.project_id, p.project_name, p.category_id, c.category_name,
+        p.area, p.project_intro, p.status, p.create_time
+        ORDER BY p.project_id ASC
+        LIMIT #{query.size} OFFSET #{query.offset}
+    </select>
+
+    <select id="countProjectList" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM heritage_project p
+        <where>
+            AND p.status = 1
+            <if test="query.categoryId != null">
+                AND p.category_id = #{query.categoryId}
+            </if>
+            <if test="query.area != null and query.area != ''">
+                AND p.area LIKE CONCAT('%', #{query.area}, '%')
+            </if>
+            <if test="query.keyword != null and query.keyword != ''">
+                AND p.project_name LIKE CONCAT('%', #{query.keyword}, '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectProjectDetail" resultType="org.example.heritage.pojo.vo.ProjectDetailVO">
+        SELECT
+        p.project_id AS projectId,
+        p.project_name AS projectName,
+        p.category_id AS categoryId,
+        c.category_name AS categoryName,
+        p.area,
+        p.project_intro AS projectIntro,
+        p.status,
+        p.create_time AS createTime
+        FROM heritage_project p
+        LEFT JOIN heritage_category c ON p.category_id = c.category_id
+        WHERE p.project_id = #{projectId}
+          AND p.status = 1
+    </select>
+
+    <select id="selectProjectStats" resultType="org.example.heritage.pojo.vo.ProjectStatsVO">
+        SELECT
+        p.project_id AS projectId,
+        p.project_name AS projectName,
+        IFNULL(SUM(d.view_num), 0) AS totalView,
+        IFNULL(SUM(d.exposure_num), 0) AS totalExposure,
+        COUNT(DISTINCT d.channel_id) AS channelCount
+        FROM heritage_project p
+        LEFT JOIN (
+            SELECT d.*
+            FROM spread_data d
+            INNER JOIN spread_channel c ON d.channel_id = c.channel_id
+            WHERE c.status = 1
+        ) d ON p.project_id = d.project_id
+        WHERE p.project_id = #{projectId}
+          AND p.status = 1
+        GROUP BY p.project_id, p.project_name
+    </select>
+
+    <select id="searchProjects" resultType="org.example.heritage.pojo.vo.SearchVO">
+        SELECT
+        'project' AS type,
+        p.project_id AS id,
+        p.project_name AS name,
+        p.area AS area,
+        NULL AS projectName,
+        LEFT(p.project_intro, 80) AS description
+        FROM heritage_project p
+        WHERE p.status = 1
+          AND (
+              p.project_name LIKE CONCAT('%', #{keyword}, '%')
+              OR p.area LIKE CONCAT('%', #{keyword}, '%')
+              OR p.project_intro LIKE CONCAT('%', #{keyword}, '%')
+          )
+        ORDER BY p.project_id ASC
+    </select>
+
+</mapper>
