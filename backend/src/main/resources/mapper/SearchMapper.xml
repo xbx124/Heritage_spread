@@ -60,7 +60,7 @@
             WHERE n.status = 'published'
               AND n.title LIKE CONCAT('%', #{keyword}, '%')
         ) t
-        ORDER BY t.id ASC
+        ORDER BY t.sortTime DESC, t.id DESC
     </select>
 
 </mapper>

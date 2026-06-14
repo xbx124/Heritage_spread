@@ -34,7 +34,7 @@
         GROUP BY
         p.project_id, p.project_name, p.category_id, c.category_name,
         p.area, p.project_intro, p.status, p.create_time
-        ORDER BY p.project_id ASC
+        ORDER BY p.create_time DESC
         LIMIT #{query.size} OFFSET #{query.offset}
     </select>
 
@@ -105,7 +105,7 @@
               OR p.area LIKE CONCAT('%', #{keyword}, '%')
               OR p.project_intro LIKE CONCAT('%', #{keyword}, '%')
           )
-        ORDER BY p.project_id ASC
+        ORDER BY p.create_time DESC
     </select>
 
 </mapper>

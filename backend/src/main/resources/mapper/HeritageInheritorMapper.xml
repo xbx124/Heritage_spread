@@ -25,7 +25,7 @@
                 AND i.name LIKE CONCAT('%', #{query.keyword}, '%')
             </if>
         </where>
-        ORDER BY i.inheritor_id ASC
+        ORDER BY i.inheritor_id DESC
         LIMIT #{query.size} OFFSET #{query.offset}
     </select>
 
@@ -73,7 +73,7 @@
         WHERE i.status = 1
           AND p.status = 1
           AND i.name LIKE CONCAT('%', #{keyword}, '%')
-        ORDER BY i.inheritor_id ASC
+        ORDER BY i.inheritor_id DESC
     </select>
 
 </mapper>
