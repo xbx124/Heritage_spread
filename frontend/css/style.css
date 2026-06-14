@@ -1959,6 +1959,51 @@ td .action-btns {
     margin-bottom: 20px;
 }
 
+.chart-row-full {
+    grid-template-columns: 1fr;
+}
+
+/* ---- 统计汇总卡片 ---- */
+.stats-summary {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.summary-card {
+    background: #fff;
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--cinnabar);
+    transition: transform 0.25s, box-shadow 0.25s;
+}
+
+.summary-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.summary-card-green { border-left-color: #4A7C59; }
+.summary-card-blue  { border-left-color: #5B7FAF; }
+.summary-card-gold  { border-left-color: var(--gold); }
+
+.summary-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+    letter-spacing: 1px;
+}
+
+.summary-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: #2c1810;
+    font-family: 'Noto Serif SC', serif;
+}
+
 .chart-box {
     background: #fff;
     border-radius: var(--radius);
