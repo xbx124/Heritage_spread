@@ -11,7 +11,7 @@
         href="https://fonts.googleapis.com/css2?family=ZCOOL+XiaoWei&family=Noto+Serif+SC:wght@300;400;500;700&family=Ma+Shan+Zheng&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
-    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+    <script src="/js/echarts.min.js"></script>
 </head>
 
 <body class="dashboard-body">
@@ -74,10 +74,10 @@
                 </div>
                 <div class="search-bar">
                     <input type="text" id="proj-keyword" placeholder="搜索项目名称..." />
-                    <select id="proj-category-filter">
+                    <select id="proj-category-filter" onchange="onProjFilterChange()">
                         <option value="">全部分类</option>
                     </select>
-                    <input type="text" id="proj-area-filter" placeholder="地区..." />
+                    <input type="text" id="proj-area-filter" placeholder="地区..." oninput="onProjFilterChange()" />
                     <button class="btn btn-outline" onclick="loadProjects()">查询</button>
                 </div>
                 <div class="table-container">
@@ -96,7 +96,7 @@
                         <tbody id="projects-tbody"></tbody>
                     </table>
                 </div>
-                <div class="pagination-bar">
+                <div class="pagination-bar" id="proj-pagination">
                     <span id="proj-page-info"></span>
                     <button class="btn btn-sm" onclick="changeProjPage(-1)">上一页</button>
                     <button class="btn btn-sm" onclick="changeProjPage(1)">下一页</button>
@@ -117,7 +117,7 @@
                 </div>
                 <div class="search-bar">
                     <input type="text" id="inh-keyword" placeholder="搜索姓名..." />
-                    <select id="inh-project-filter">
+                    <select id="inh-project-filter" onchange="onInhFilterChange()">
                         <option value="">全部项目</option>
                     </select>
                     <button class="btn btn-outline" onclick="loadInheritors()">查询</button>
@@ -136,7 +136,7 @@
                         <tbody id="inheritors-tbody"></tbody>
                     </table>
                 </div>
-                <div class="pagination-bar">
+                <div class="pagination-bar" id="inh-pagination">
                     <span id="inh-page-info"></span>
                     <button class="btn btn-sm" onclick="changeInhPage(-1)">上一页</button>
                     <button class="btn btn-sm" onclick="changeInhPage(1)">下一页</button>
@@ -155,7 +155,7 @@
                     <h2>文化资讯</h2>
                 </div>
                 <div id="news-list"></div>
-                <div class="pagination-bar">
+                <div class="pagination-bar" id="news-pagination">
                     <span id="news-page-info"></span>
                     <button class="btn btn-sm" onclick="changeNewsPage(-1)">上一页</button>
                     <button class="btn btn-sm" onclick="changeNewsPage(1)">下一页</button>
@@ -207,6 +207,28 @@
             <!-- ========== 数据统计 ========== -->
             <section id="page-stats" class="page" style="display:none">
                 <h2>传播数据统计分析</h2>
+
+                <!-- 汇总卡片 -->
+                <div class="stats-summary">
+                    <div class="summary-card">
+                        <div class="summary-label">总浏览量</div>
+                        <div class="summary-value" id="total-views">--</div>
+                    </div>
+                    <div class="summary-card summary-card-green">
+                        <div class="summary-label">总曝光量</div>
+                        <div class="summary-value" id="total-exposure">--</div>
+                    </div>
+                    <div class="summary-card summary-card-blue">
+                        <div class="summary-label">传播渠道数</div>
+                        <div class="summary-value" id="channel-count">--</div>
+                    </div>
+                    <div class="summary-card summary-card-gold">
+                        <div class="summary-label">非遗项目数</div>
+                        <div class="summary-value" id="project-count">--</div>
+                    </div>
+                </div>
+
+                <!-- 图表区 -->
                 <div class="chart-row">
                     <div class="chart-box">
                         <h3>各渠道浏览/曝光</h3>
@@ -225,6 +247,12 @@
                     <div class="chart-box">
                         <h3>项目曝光量对比</h3>
                         <div id="chart-project-bar" style="height:350px;"></div>
+                    </div>
+                </div>
+                <div class="chart-row chart-row-full">
+                    <div class="chart-box">
+                        <h3>传播数据综合分析</h3>
+                        <div id="chart-combined" style="height:400px;"></div>
                     </div>
                 </div>
             </section>
@@ -301,6 +329,7 @@
     </div>
 
     <script src="/js/app.js"></script>
+    <script src="/data/js/stats.js"></script>
 </body>
 
 </html>
