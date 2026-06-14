@@ -10,10 +10,8 @@ public class ProjectStatsVO {
 
     private String projectName;
 
-    @JsonProperty("viewNum")
     private Long totalView;
 
-    @JsonProperty("exposureNum")
     private Long totalExposure;
 
     private Integer channelCount;

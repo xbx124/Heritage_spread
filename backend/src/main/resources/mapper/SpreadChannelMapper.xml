@@ -35,7 +35,7 @@
             AND (p.project_id IS NULL OR p.status = 1)
         </where>
         GROUP BY c.channel_id, c.channel_name, c.channel_type
-        ORDER BY totalView DESC
+        ORDER BY c.channel_id ASC
     </select>
 
 </mapper>
