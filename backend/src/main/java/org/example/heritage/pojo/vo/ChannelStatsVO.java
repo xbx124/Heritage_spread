@@ -12,9 +12,7 @@ public class ChannelStatsVO {
 
     private String channelType;
 
-    @JsonProperty("viewNum")
     private Long totalView;
 
-    @JsonProperty("exposureNum")
     private Long totalExposure;
 }
